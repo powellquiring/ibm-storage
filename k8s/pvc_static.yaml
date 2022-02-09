@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: static-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 10Gi
+  csi:
+    driver: vpc.block.csi.ibm.io
+    fsType: ext4
+    volumeAttributes:
+      volumeId: 0717-ce6f1737-b899-4c43-904b-59fd0bb9a17c
+    volumeHandle: r006-0e3ecb7a-4b4e-436a-950c-22d582143446
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  volumeMode: Filesystem
+
+# k8s $ ibmcloud ks storage attachment ls --cluster $c --worker $w
+# Listing volume attachments...
+# OK
+# ID                                          Name                              Status     Type   Volume ID                                   Volume Name                   Worker ID
+# 0717-66768b86-4330-4d7f-8ab7-8aad8043aac4   subtract-audibly-maverick-quiet   attached   data   r006-0e3ecb7a-4b4e-436a-950c-22d582143446   k8s                           kube-c7o5069d0t2jkhpch1i0-ikscos00clu-default-00000170
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+  volumeName: static-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: my-deployment
+    labels:
+      app: my-app
+spec:
+    replicas: 5
+    selector:
+      matchLabels:
+        app: my-app
+    template:
+      metadata:
+        labels:
+          app: my-app
+      spec:
+        nodeSelector:
+          pvc: my-pvc
+        containers:
+        #- image: httpd:alpine
+        - image: us.icr.io/ikscos00/nginx:latest
+          name: my-container
+          volumeMounts:
+          - name: my-volume
+            mountPath: /mount-path
+        volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: my-pvc

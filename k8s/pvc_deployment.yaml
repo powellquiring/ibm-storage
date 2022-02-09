@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  storageClassName: ibmc-vpc-block-5iops-tier
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: my-deployment
+    labels:
+      app: my-app
+spec:
+    replicas: 5
+    selector:
+      matchLabels:
+        app: my-app
+    template:
+      metadata:
+        labels:
+          app: my-app
+      spec:
+        containers:
+        #- image: httpd:alpine
+        - image: us.icr.io/ikscos00/nginx:latest
+          name: my-container
+          volumeMounts:
+          - name: my-volume
+            mountPath: /mount-path
+        volumes:
+        - name: my-volume
+          persistentVolumeClaim:
+            claimName: my-pvc
+
