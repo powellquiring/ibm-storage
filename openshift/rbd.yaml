@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rbd
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ocs-storagecluster-ceph-rbd
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rbd
+spec:
+  containers:
+  - name: pod-tbd
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /block
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: rbd

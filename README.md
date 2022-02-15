@@ -1,27 +1,30 @@
 # IBM Storage
-Companion to blog post 
+Companion to blog pos but not woven into the text so not called out in the blog post.
 
 ```mermaid
-graph TD;
-    Start==>Code
-    Code[Software under consideration]==I am writing==>MyCode[Sofware I am writing];
-    subgraph mycode2
-      MyCode==references==>ObjectLike["Objects audio, video, parquet, ..."];
-      MyCode==references==>FS[File System];
+flowchart TD;
+    Code[Software under consideration]
+    Code--I must host-->ThirdParty[Software I host];
+    ThirdParty--file system required-->FileSystem
+    ThirdParty--database requiring<br> a block device-->BlockDevice
+    FileSystem--file sharing--->NetworkFileStorage
+    Code==I design==>MYCODE
+    subgraph MYCODE[Software I control]
+      ObjectLike["Objects audio, video, parquet, ..."];
+      FS[*File system dependency];
     end
-    FS--references-->FileSystem[File System];
-    ObjectLike--accessed world wide-->COS([COS]);
-    ObjectLike==price sensitive====>COS;
-    ObjectLike--latency sensitive-->FileSystem;
-    FileSystem--file sharing--->NetworkFileStorage([Network File Storage]);
-    FileSystem--no file sharing-->BlockDevice[Block Device];
-    Code--I am hosting-->ThirdParty[Software I manage];
-    ThirdParty--referenc-->FileSystem
-    ThirdParty--database-->BlockDevice
-    BlockDevice--default-->Volume([Volume]);
-    BlockDevice--high performance-->Instance([Instance]);
-    Code==if at all possible======>IBMManagedService([IBM Managed Service]);
+    FS--true-->FileSystem[File System];
+    subgraph "VPC "
+      FileSystem--no file sharing-->BlockDevice[Block Device];
+      BlockDevice--high performance but <br> lower availability-->Instance([Instance]);
+      BlockDevice--typical-->Volume([Volume]);
+      NetworkFileStorage([Network File Storage]);
+    end
+    ObjectLike==price sensitive or <br> world wide access====>COS;
+    ObjectLike--*latency sensitive-->FileSystem;
+    Code==I can use an IBM service=====>IBMManagedService([IBM Catalog Service]);
 ```
+
 # k8s
 ## Dynamic provision
 [Storing data on Block Storage for VPC](https://cloud.ibm.com/docs/containers?topic=containers-vpc-block)
@@ -75,3 +78,6 @@ statically provision the pv/pvc with volume details
 use node selectors in your app pod.
 i tried this in my cluster but i only have one node per zone so just using the pv would work in my case.
 it might be possible to specify the node in the node selector terms of the PV - but i’m not sure if that is supported.
+
+# OpenShift
+See [README.md](./openshift/README.md)

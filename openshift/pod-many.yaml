@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-many1
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo $(date -u) >> /test/test1.txt; sleep 600; done"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: odf-pvc-many
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-many2
+spec:
+  containers:
+  - name: pod-many2
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo $(date -u) >> /test/test2.txt; sleep 600; done"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: odf-pvc-many

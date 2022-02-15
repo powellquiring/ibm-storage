@@ -1,0 +1,161 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs10a
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ocs-storagecluster-cephfs
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs10b
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: ocs-storagecluster-cephfs
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs25a
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+  storageClassName: ocs-storagecluster-cephfs
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs25b
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+  storageClassName: ocs-storagecluster-cephfs
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs25c
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 25Gi
+  storageClassName: ocs-storagecluster-cephfs
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cephfs10a
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "cd /test; echo start $HOSTNAME > $HOSTNAME; while cat $HOSTNAME $HOSTNAME > $HOSTNAME.new; do mv $HOSTNAME.new $HOSTNAME; ls -l $HOSTNAME; done; sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: cephfs10a
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cephfs10b
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "cd /test; echo start $HOSTNAME > $HOSTNAME; while cat $HOSTNAME $HOSTNAME > $HOSTNAME.new; do mv $HOSTNAME.new $HOSTNAME; ls -l $HOSTNAME; done; sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: cephfs10b
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cephfs25a
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "cd /test; echo start $HOSTNAME > $HOSTNAME; while cat $HOSTNAME $HOSTNAME > $HOSTNAME.new; do mv $HOSTNAME.new $HOSTNAME; ls -l $HOSTNAME; done; sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: cephfs25a
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cephfs25b
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "cd /test; echo start $HOSTNAME > $HOSTNAME; while cat $HOSTNAME $HOSTNAME > $HOSTNAME.new; do mv $HOSTNAME.new $HOSTNAME; ls -l $HOSTNAME; done; sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: cephfs25b
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cephfs25c
+spec:
+  containers:
+  - name: pod-many1
+    image: nginx
+    command: ["/bin/sh"]
+    args: ["-c", "cd /test; echo start $HOSTNAME > $HOSTNAME; while cat $HOSTNAME $HOSTNAME > $HOSTNAME.new; do mv $HOSTNAME.new $HOSTNAME; ls -l $HOSTNAME; done; sleep 99999"]
+    volumeMounts:
+    - name: persistent-storage
+      mountPath: /test
+  volumes:
+  - name: persistent-storage
+    persistentVolumeClaim:
+      claimName: cephfs25c
