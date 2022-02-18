@@ -2,6 +2,9 @@
 Companion to blog pos but not woven into the text so not called out in the blog post.
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {
+  'secondaryColor': 'white'
+  }}}%%
 flowchart TD;
     Code[Software under consideration]
     Code--I must host-->ThirdParty[Software I host];
@@ -10,7 +13,7 @@ flowchart TD;
     FileSystem--file sharing--->NetworkFileStorage
     Code==I design==>MYCODE
     subgraph MYCODE[Software I control]
-      ObjectLike["Objects audio, video, parquet, ..."];
+      ObjectLike["Objects: audio, video, Parquet, etc."]
       FS[*File system dependency];
     end
     FS--true-->FileSystem[File System];
@@ -20,7 +23,7 @@ flowchart TD;
       BlockDevice--typical-->Volume([Volume]);
       NetworkFileStorage([Network File Storage]);
     end
-    ObjectLike==price sensitive or <br> world wide access====>COS;
+    ObjectLike==price sensitive or <br> worldwide access====>COS;
     ObjectLike--*latency sensitive-->FileSystem;
     Code==I can use an IBM service=====>IBMManagedService([IBM Catalog Service]);
 ```
